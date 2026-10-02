@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Creative Content Explorer</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f6fb;
+    color:#222;
+}
+
+.container{
+    width:92%;
+    max-width:1050px;
+    margin:35px auto;
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 5px 25px rgba(0,0,0,0.12);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:30px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-top:18px;
+    margin-bottom:8px;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+}
+
+button{
+    cursor:pointer;
+}
+
+.generate-btn{
+    width:100%;
+    padding:15px;
+    margin-top:25px;
+    border:0;
+    border-radius:8px;
+    background:#315bea;
+    color:white;
+    font-size:16px;
+}
+
+.generate-btn:hover{
+    background:#2448c7;
+}
+
+/* RESULTS */
+
+.section-title{
+    margin-top:35px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+}
+
+.card{
+    border:1px solid #ddd;
+    border-radius:12px;
+    overflow:hidden;
+    background:white;
+    box-shadow:0 3px 12px rgba(0,0,0,.10);
+    cursor:pointer;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+
+.card-content{
+    padding:17px;
+}
+
+.card h3{
+    color:#2448c7;
+}
+
+.card p{
+    line-height:1.5;
+    color:#555;
+}
+
+.explore{
+    color:#315bea;
+    font-weight:bold;
+}
+
+/* PLACE SEARCH */
+
+.place-section{
+    margin-top:45px;
+    padding-top:30px;
+    border-top:2px solid #eee;
+}
+
+.place-search{
+    display:flex;
+    gap:10px;
+}
+
+.place-search input{
+    flex:1;
+}
+
+.place-search button{
+    width:150px;
+    border:0;
+    border-radius:8px;
+    background:#16803c;
+    color:white;
+    font-size:16px;
+}
+
+/* DETAILS */
+
+.details{
+    display:none;
+    margin-top:30px;
+    padding:25px;
+    background:#f7f9ff;
+    border-radius:14px;
+    border-left:5px solid #315bea;
+}
+
+.details .hero{
+    width:100%;
+    max-height:420px;
+    object-fit:cover;
+    border-radius:12px;
+}
+
+.details h2{
+    color:#2448c7;
+}
+
+.details h3{
+    margin-top:25px;
+}
+
+.details p,
+.details li{
+    line-height:1.7;
+}
+
+.map-btn{
+    display:inline-block;
+    padding:12px 18px;
+    margin-top:10px;
+    background:#16803c;
+    color:white;
+    text-decoration:none;
+    border-radius:7px;
+}
+
+.back-btn{
+    margin-top:25px;
+    padding:11px 18px;
+    background:#555;
+    color:white;
+    border:0;
+    border-radius:7px;
+}
+
+/* SUGGESTIONS */
+
+.suggestions{
+    margin-top:35px;
+    padding:20px;
+    background:#eef2ff;
+    border-radius:12px;
+}
+
+.suggestion-buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.suggestion-buttons button{
+    padding:10px 16px;
+    border:1px solid #ccd4ff;
+    border-radius:20px;
+    background:white;
+}
+
+.suggestion-buttons button:hover{
+    background:#315bea;
+    color:white;
+}
+
+.loading{
+    display:none;
+    text-align:center;
+    padding:20px;
+    color:#315bea;
+    font-weight:bold;
+}
+
+.error{
+    padding:20px;
+    background:#fff0f0;
+    color:#a00000;
+    border-radius:8px;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="container">
+
+<h1>Creative Content Explorer</h1>
+
+<p class="subtitle">
+Generate creative blog ideas and explore places.
+</p>
+
+
+<!-- =========================
+     BLOG IDEA SECTION
+========================= -->
+
+<label for="topic">
+Blog Topic
+</label>
+
+<input
+    type="text"
+    id="topic"
+    placeholder="Example: Technology, Travel, AI..."
+>
+
+
+<label for="audience">
+Target Audience
+</label>
+
+<input
+    type="text"
+    id="audience"
+    placeholder="Example: Beginners, Students, Travellers..."
+>
+
+
+<label for="tone">
+Content Tone
+</label>
+
+<select id="tone">
+
+    <option>Friendly</option>
+
+    <option>Professional</option>
+
+    <option>Informative</option>
+
+    <option>Creative</option>
+
+    <option>Simple</option>
+
+</select>
+
+
+<button
+    class="generate-btn"
+    onclick="generateIdeas()">
+
+Generate Ideas
+
+</button>
+
+
+<div
+    id="loading"
+    class="loading">
+
+Generating ideas...
+
+</div>
+
+
+<h2 class="section-title">
+Generated Blog Ideas
+</h2>
+
+
+<div
+    id="blogResults"
+    class="cards">
+</div>
+
+
+<!-- =========================
+     PLACE SEARCH SECTION
+========================= -->
+
+<div class="place-section">
+
+<h2>
+📍 Search Places
+</h2>
+
+<p>
+Search for any place to explore travel information.
+</p>
+
+
+<div class="place-search">
+
+<input
+    type="text"
+    id="placeInput"
+    placeholder="Enter any place...">
+
+<button onclick="searchPlace()">
+Search Place
+</button>
+
+</div>
+
+
+<div
+    id="placeLoading"
+    class="loading">
+
+Searching place...
+
+</div>
+
+
+<div
+    id="placeResults"
+    class="cards">
+</div>
+
+</div>
+
+
+<!-- =========================
+     DETAILS
+========================= -->
+
+<div
+    id="details"
+    class="details">
+</div>
+
+
+<!-- =========================
+     SUGGESTIONS
+========================= -->
+
+<div class="suggestions">
+
+<h3>
+✨ Explore More Suggestions
+</h3>
+
+<p>
+Try these or search anything you want.
+</p>
+
+<div class="suggestion-buttons">
+
+<button onclick="quickTopic('Technology')">
+Technology
+</button>
+
+<button onclick="quickTopic('Artificial Intelligence')">
+Artificial Intelligence
+</button>
+
+<button onclick="quickTopic('Travel')">
+Travel
+</button>
+
+<button onclick="quickTopic('Photography')">
+Photography
+</button>
+
+<button onclick="quickPlace('Ooty')">
+Ooty
+</button>
+
+<button onclick="quickPlace('Coorg')">
+Coorg
+</button>
+
+<button onclick="quickPlace('Manali')">
+Manali
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================
+   GENERATE BLOG IDEAS
+===================================== */
+
+function generateIdeas(){
+
+    const topic =
+    document.getElementById("topic").value.trim();
+
+    const audience =
+    document.getElementById("audience").value.trim();
+
+    const tone =
+    document.getElementById("tone").value;
+
+
+    if(topic === ""){
+
+        alert("Please enter a blog topic.");
+
+        return;
+    }
+
+
+    const results =
+    document.getElementById("blogResults");
+
+
+    const loading =
+    document.getElementById("loading");
+
+
+    loading.style.display="block";
+
+    results.innerHTML="";
+
+
+    setTimeout(function(){
+
+        loading.style.display="none";
+
+
+        const ideas=[
+
+        {
+            title:"Complete Guide to "+topic,
+            text:"Learn the basics, important concepts and useful information about "+topic+".",
+            image:"https://loremflickr.com/800/500/"+encodeURIComponent(topic)
+        },
+
+        {
+            title:"Uses and Applications of "+topic,
+            text:"Discover how "+topic+" is used in real life and different fields.",
+            image:"https://loremflickr.com/800/500/"+encodeURIComponent(topic)+",technology"
+        },
+
+        {
+            title:"Advantages and Disadvantages of "+topic,
+            text:"Understand the major benefits, limitations and challenges of "+topic+".",
+            image:"https://loremflickr.com/800/500/"+encodeURIComponent(topic)+",business"
+        },
+
+        {
+            title:"Interesting Facts About "+topic,
+            text:"Explore interesting facts and useful information that readers should know.",
+            image:"https://loremflickr.com/800/500/"+encodeURIComponent(topic)+",nature"
+        },
+
+        {
+            title:"Future of "+topic,
+            text:"Explore future developments, opportunities and possibilities related to "+topic+".",
+            image:"https://loremflickr.com/800/500/"+encodeURIComponent(topic)+",future"
+        },
+
+        {
+            title:topic+" for Beginners",
+            text:"A simple and "+tone.toLowerCase()+" guide to "+topic+" for "+(audience || "beginners")+".",
+            image:"https://loremflickr.com/800/500/"+encodeURIComponent(topic)+",learning"
+        }
+
+        ];
+
+
+        ideas.forEach(function(item){
+
+            const card =
+            document.createElement("div");
+
+            card.className="card";
+
+
+            card.innerHTML=`
+
+                <img
+                    src="${item.image}"
+                    alt="${item.title}"
+                >
+
+                <div class="card-content">
+
+                    <h3>
+                        ${item.title}
+                    </h3>
+
+                    <p>
+                        ${item.text}
+                    </p>
+
+                    <span class="explore">
+                        Click to explore →
+                    </span>
+
+                </div>
+
+            `;
+
+
+            card.onclick=function(){
+
+                showTopicDetails(
+                    item,
+                    topic,
+                    audience
+                );
+
+            };
+
+
+            results.appendChild(card);
+
+        });
+
+
+    },700);
+
+}
+
+
+/* =====================================
+   TOPIC DETAILS
+===================================== */
+
+function showTopicDetails(
+    item,
+    topic,
+    audience
+){
+
+    const details =
+    document.getElementById("details");
+
+
+    details.innerHTML=`
+
+        <img
+            class="hero"
+            src="${item.image}"
+        >
+
+
+        <h2>
+            💡 ${item.title}
+        </h2>
+
+
+        <h3>
+            📖 Introduction
+        </h3>
+
+        <p>
+            ${item.text}
+            This section provides an easy way to understand
+            the topic and develop it into an interesting blog.
+        </p>
+
+
+        <h3>
+            ⚙️ Uses & Applications
+        </h3>
+
+        <p>
+            ${topic} can be explored through its practical
+            uses, applications and real-world examples.
+        </p>
+
+
+        <h3>
+            ✅ Advantages
+        </h3>
+
+        <p>
+            The advantages of ${topic} depend on how it is
+            used. It can provide useful opportunities and
+            support different activities.
+        </p>
+
+
+        <h3>
+            ⚠️ Disadvantages
+        </h3>
+
+        <p>
+            ${topic} may also have limitations and challenges
+            depending on its application.
+        </p>
+
+
+        <h3>
+            👥 Target Audience
+        </h3>
+
+        <p>
+            ${audience || "General readers"}
+        </p>
+
+
+        <h3>
+            📝 Blog Writing Ideas
+        </h3>
+
+        <ul>
+
+            <li>
+                Introduction to ${topic}
+            </li>
+
+            <li>
+                Important facts about ${topic}
+            </li>
+
+            <li>
+                Uses and applications
+            </li>
+
+            <li>
+                Advantages and disadvantages
+            </li>
+
+            <li>
+                Future of ${topic}
+            </li>
+
+        </ul>
+
+
+        <button
+            class="back-btn"
+            onclick="closeDetails()">
+
+            ← Back
+
+        </button>
+
+    `;
+
+
+    details.style.display="block";
+
+
+    details.scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =====================================
+   PLACE SEARCH
+===================================== */
+
+async function searchPlace(){
+
+    const place =
+    document
+    .getElementById("placeInput")
+    .value
+    .trim();
+
+
+    if(place === ""){
+
+        alert("Please enter a place.");
+
+        return;
+    }
+
+
+    const results =
+    document.getElementById("placeResults");
+
+
+    const loading =
+    document.getElementById("placeLoading");
+
+
+    loading.style.display="block";
+
+    results.innerHTML="";
+
+
+    try{
+
+        const url =
+        "https://en.wikivoyage.org/w/api.php" +
+
+        "?action=query" +
+
+        "&generator=search" +
+
+        "&gsrsearch="+
+        encodeURIComponent(place) +
+
+        "&gsrlimit=6" +
+
+        "&prop=extracts|pageimages" +
+
+        "&exintro=1" +
+
+        "&explaintext=1" +
+
+        "&piprop=thumbnail" +
+
+        "&pithumbsize=800" +
+
+        "&format=json" +
+
+        "&origin=*";
+
+
+        const response =
+        await fetch(url);
+
+
+        const data =
+        await response.json();
+
+
+        loading.style.display="none";
+
+
+        if(!data.query){
+
+            results.innerHTML=`
+
+                <div class="error">
+
+                    No travel information found
+                    for ${place}.
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const pages =
+        Object.values(data.query.pages);
+
+
+        pages.forEach(function(page){
+
+            createPlaceCard(page);
+
+        });
+
+    }
+
+    catch(error){
+
+        loading.style.display="none";
+
+        results.innerHTML=`
+
+            <div class="error">
+
+                Please check your internet connection.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================
+   PLACE CARD
+===================================== */
+
+function createPlaceCard(page){
+
+    const results =
+    document.getElementById("placeResults");
+
+
+    let image =
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80";
+
+
+    if(
+        page.thumbnail &&
+        page.thumbnail.source
+    ){
+
+        image=page.thumbnail.source;
+
+    }
+
+
+    const description =
+    page.extract ||
+    "Explore this destination.";
+
+
+    const card =
+    document.createElement("div");
+
+
+    card.className="card";
+
+
+    card.innerHTML=`
+
+        <img
+            src="${image}"
+            alt="${page.title}"
+        >
+
+        <div class="card-content">
+
+            <h3>
+                ${page.title}
+            </h3>
+
+            <p>
+                ${description.substring(0,180)}...
+            </p>
+
+            <span class="explore">
+                Explore Place →
+            </span>
+
+        </div>
+
+    `;
+
+
+    card.onclick=function(){
+
+        showPlaceDetails(
+            page.title,
+            description,
+            image
+        );
+
+    };
+
+
+    results.appendChild(card);
+
+}
+
+
+/* =====================================
+   PLACE DETAILS
+===================================== */
+
+function showPlaceDetails(
+    place,
+    description,
+    image
+){
+
+    const details =
+    document.getElementById("details");
+
+
+    const mapURL =
+    "https://www.google.com/maps/search/?api=1&query="+
+    encodeURIComponent(place);
+
+
+    details.innerHTML=`
+
+        <img
+            class="hero"
+            src="${image}"
+            alt="${place}"
+        >
+
+
+        <h2>
+            🌍 ${place}
+        </h2>
+
+
+        <h3>
+            ✨ About ${place}
+        </h3>
+
+        <p>
+            ${description}
+        </p>
+
+
+        <h3>
+            📍 Best Places to Visit
+        </h3>
+
+        <p>
+            Explore popular attractions, natural places,
+            viewpoints, historical locations and local
+            sightseeing spots around ${place}.
+        </p>
+
+
+        <h3>
+            🌤️ Best Time to Visit
+        </h3>
+
+        <p>
+            The best time depends on the weather,
+            season and activities you want to enjoy.
+            Check current local conditions before travelling.
+        </p>
+
+
+        <h3>
+            🎒 Things to Do
+        </h3>
+
+        <ul>
+
+            <li>
+                Explore local attractions
+            </li>
+
+            <li>
+                Enjoy local food
+            </li>
+
+            <li>
+                Take photographs
+            </li>
+
+            <li>
+                Experience local culture
+            </li>
+
+            <li>
+                Explore nearby places
+            </li>
+
+        </ul>
+
+
+        <h3>
+            🧳 Travel Tips
+        </h3>
+
+        <p>
+            Plan transport and accommodation in advance.
+            Check weather conditions and attraction timings.
+            Carry suitable clothing and essential items.
+        </p>
+
+
+        <h3>
+            ❤️ Travel Experience
+        </h3>
+
+        <p>
+            Visiting ${place} can provide an opportunity
+            to explore its scenery, culture, food and
+            attractions. The experience can vary depending
+            on the season and activities selected.
+        </p>
+
+
+        <h3>
+            🗺️ Route / Map
+        </h3>
+
+        <p>
+            Open Google Maps to view the exact location,
+            directions and route.
+        </p>
+
+
+        <a
+            class="map-btn"
+            href="${mapURL}"
+            target="_blank">
+
+            📍 View Route / Map
+
+        </a>
+
+
+        <br>
+
+
+        <button
+            class="back-btn"
+            onclick="closeDetails()">
+
+            ← Back
+
+        </button>
+
+    `;
+
+
+    details.style.display="block";
+
+
+    details.scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =====================================
+   QUICK BUTTONS
+===================================== */
+
+function quickTopic(topic){
+
+    document.getElementById("topic").value=topic;
+
+    generateIdeas();
+
+}
+
+
+function quickPlace(place){
+
+    document.getElementById("placeInput").value=place;
+
+    searchPlace();
+
+}
+
+
+/* =====================================
+   CLOSE
+===================================== */
+
+function closeDetails(){
+
+    document
+    .getElementById("details")
+    .style.display="none";
+
+}
+
+</script>
+
+</body>
+</html>
